@@ -32,9 +32,15 @@ export class Game {
             //validate move using zod
 
             if (this.board.turn() === 'w' && socket !== this.player1) {
+                this.player2.send(JSON.stringify({
+                    type: "not your turn",
+                }))
                 return;
             }
             if (this.board.turn() === 'b' && socket !== this.player2) {
+                this.player1.send(JSON.stringify({
+                    type: "not your turn",
+                }))
                 return;
             }
 
@@ -53,14 +59,14 @@ export class Game {
             }
 
             if(this.board.turn() === 'w'){
-                this.player2.send(JSON.stringify({
+                this.player1.send(JSON.stringify({
                     type: MOVE,
                     payload: move
                 }))
             }
 
             if(this.board.turn() === 'b'){
-                this.player1.send(JSON.stringify({
+                this.player2.send(JSON.stringify({
                     type: MOVE,
                     payload: move
                 }))
