@@ -16,11 +16,12 @@ export class GameManager {
         this.users = [];
     }
 
-    addUser(socket: WebSocket){
+    addUser(socket: WebSocket) {
         this.users.push(socket);
+        this.messageHandler(socket);
     }
 
-    removeUser(socket:WebSocket){
+    removeUser(socket: WebSocket) {
         this.users = this.users.filter(user => user !== socket);
         //stop game because user has left
     }
@@ -29,18 +30,22 @@ export class GameManager {
         socket.on('message', (data) => {
             const message = JSON.parse(data.toString());
 
-            if(message.type === INIT_GAME){
-                if(this.pendingUser){
+            if (message.type === INIT_GAME) {
+                if (this.pendingUser) {
                     const game = new Game(this.pendingUser, socket);
                     this.games.push(game);
-                    this.pendingUser = null;                
+                    this.pendingUser = null;
+
                 }
-                else{
+                else {
                     this.pendingUser = socket;
                 }
             }
-            if(message.type === MOVE){
+            if (message.type === MOVE) {
                 const game = this.games.find(game => game.player1 === socket || game.player2 === socket);
+                if (game) {
+                    game.makeMove(socket, message.move);
+                }
             }
         })
     }
