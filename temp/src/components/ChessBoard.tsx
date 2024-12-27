@@ -1,6 +1,5 @@
 const ChessBoard = () => {
   const board = Array(8).fill(null).map(() => Array(8).fill(null));
-  console.log(board);
   
   return (
     <div className="w-full max-w-md mx-auto aspect-square">
