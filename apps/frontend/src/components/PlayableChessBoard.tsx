@@ -11,7 +11,6 @@ const ChessBoard = ({ board, socket, setBoard, chess }: {
 }) => {
 
     const [from, setFrom] = useState<Square | null>(null);
-    const [to, setTo] = useState<Square | null>(null);
     
     return (
         <div className="w-full max-w-md mx-auto aspect-square">
@@ -27,16 +26,6 @@ const ChessBoard = ({ board, socket, setBoard, chess }: {
                                         setFrom(squareNumber);
                                     } 
                                     else {
-                                        try {
-                                            chess.move({
-                                                from: from,
-                                                to: squareNumber
-                                            })
-                                        setBoard(chess.board())
-                                        } catch (error) {
-                                            console.error(error);
-                                        }
-                                        
                                         socket.send(JSON.stringify({
                                             type: MOVE,
                                             move: {

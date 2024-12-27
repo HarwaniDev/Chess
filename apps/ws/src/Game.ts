@@ -46,6 +46,16 @@ export class Game {
 
             try {
                 this.board.move(move);
+                this.player1.send(JSON.stringify({
+                    type: MOVE,
+                    payload: move
+                }))
+
+                this.player2.send(JSON.stringify({
+                    type: MOVE,
+                    payload: move
+                }))
+
             } catch (error) {
                 console.error(error);
             }
@@ -57,19 +67,5 @@ export class Game {
                 }));
                 return;
             }
-
-            if(this.board.turn() === 'w'){
-                this.player1.send(JSON.stringify({
-                    type: MOVE,
-                    payload: move
-                }))
-            }
-
-            if(this.board.turn() === 'b'){
-                this.player2.send(JSON.stringify({
-                    type: MOVE,
-                    payload: move
-                }))
-            }  
     }
 }

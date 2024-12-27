@@ -21,20 +21,15 @@ export default function Game() {
             switch (message.type) {
                 case INIT_GAME:
                     setBoard(chess.board());
-                    console.log(chess.board());
-                    console.log("game initialized");
                     break;
                 case MOVE: 
                     try {
-                    console.log(message.payload);
                     chess.move(message.payload);   
                     setBoard(chess.board());
-                    console.log("here after chess.board()");
                     
                 } catch (error) {
                         console.error(error);
                     }
-                    console.log("move made");
                     break;
                 case GAME_OVER: 
                     console.log("game over");
