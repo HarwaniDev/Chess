@@ -1,4 +1,4 @@
-import { MOVE } from "../../../ws/src/messages";
+import { MOVE } from "common";
 import { Color, PieceSymbol, Square, Chess } from "chess.js";
 import { useState } from "react";
 

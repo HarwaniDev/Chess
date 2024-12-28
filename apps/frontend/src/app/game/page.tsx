@@ -1,8 +1,7 @@
 "use client"
 import ChessBoard from "@/components/PlayableChessBoard";
-import { Button } from "@/components/ui/button";
 import { useSocket } from "@/hooks/useSocket";
-import { GAME_OVER, INIT_GAME, MOVE } from "../../../../ws/src/messages";
+import { GAME_OVER, INIT_GAME, MOVE } from "common";
 import { Chess } from "chess.js";
 import { useEffect, useState } from "react";
 
@@ -44,13 +43,13 @@ export default function Game() {
     return (
         <>
         <ChessBoard chess={chess} setBoard={setBoard} board={board} socket={socket}></ChessBoard>
-        <Button onClick={() => {
+        <button onClick={() => {
             socket?.send(JSON.stringify({
                 type: INIT_GAME
             }))
         }}>
             Play
-        </Button>
+        </button>
         </>
     )
 }

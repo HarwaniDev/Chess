@@ -1,5 +1,6 @@
+"use client"
 import ChessBoard from '@/components/ChessBoard'
-import { Button } from "@/components/ui/button"
+import { signIn } from 'next-auth/react'
 
 export default function Home() {
   return (
@@ -14,22 +15,22 @@ export default function Home() {
             <p className="text-xl text-green-700">
               Play against players all around the world
             </p>
-            <div className="space-y-4">
-              <Button className="w-full bg-green-600 hover:bg-green-700 text-white">
-                Play as Guest
-              </Button>
-              <Button className="w-full bg-white text-green-600 hover:bg-green-100 border border-green-600">
-                Sign Up
-              </Button>
-              <Button className="w-full bg-green-100 text-green-600 hover:bg-green-200">
-                Sign In
-              </Button>
+            <div className="space-y-4 flex flex-col justify-center items-center">
+              <button className="px-12 py-4 rounded-full bg-[#1ED760] font-bold text-white tracking-widest uppercase transform hover:scale-105 hover:bg-[#21e065] transition-colors duration-200 w-80">
+                Play as guest
+              </button>
+              <button className="px-12 py-4 rounded-full bg-[#1ED760] font-bold text-white tracking-widest uppercase transform hover:scale-105 hover:bg-[#21e065] transition-colors duration-200 w-80" onClick={() => signIn()}>
+                Sign up
+              </button>
+              <button className="px-12 py-4 rounded-full bg-[#1ED760] font-bold text-white tracking-widest uppercase transform hover:scale-105 hover:bg-[#21e065] transition-colors duration-200 w-80" onClick={() => signIn()}>
+                Sign in
+              </button>
             </div>
           </div>
         </div>
       </main>
       <footer className="text-center p-4 text-green-600">
-         CheckMate.com
+        CheckMate.com
       </footer>
     </div>
   )
