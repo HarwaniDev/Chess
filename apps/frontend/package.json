@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chessmate/db": "*",
+    "@prisma/client": "^6.1.0",
     "@radix-ui/react-slot": "^1.1.1",
     "chess.js": "^1.0.0-beta.8",
     "class-variance-authority": "^0.7.1",
@@ -22,10 +24,12 @@
     "react-dom": "^19.0.0",
     "react-element-to-jsx-string": "^15.0.0",
     "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@prisma/nextjs-monorepo-workaround-plugin": "^6.1.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

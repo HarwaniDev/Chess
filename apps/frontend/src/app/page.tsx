@@ -1,8 +1,13 @@
 "use client"
 import ChessBoard from '@/components/ChessBoard'
-import { signIn } from 'next-auth/react'
+import { signIn, signOut, useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+
+  const session = useSession();
+  const router = useRouter();
+
   return (
     <div className="min-h-screen bg-green-50 flex flex-col">
       <main className="flex-grow flex items-center justify-center p-8">
@@ -16,15 +21,18 @@ export default function Home() {
               Play against players all around the world
             </p>
             <div className="space-y-4 flex flex-col justify-center items-center">
-              <button className="px-12 py-4 rounded-full bg-[#1ED760] font-bold text-white tracking-widest uppercase transform hover:scale-105 hover:bg-[#21e065] transition-colors duration-200 w-80">
+              <button className="px-12 py-4 rounded-full bg-[#1ED760] font-bold text-white tracking-widest uppercase transform hover:scale-105 hover:bg-[#21e065] transition-colors duration-200 w-80"
+              onClick={() => {
+                router.push("/game")
+              }}>
                 Play as guest
               </button>
-              <button className="px-12 py-4 rounded-full bg-[#1ED760] font-bold text-white tracking-widest uppercase transform hover:scale-105 hover:bg-[#21e065] transition-colors duration-200 w-80" onClick={() => signIn()}>
-                Sign up
+              <button className="px-12 py-4 rounded-full bg-[#1ED760] font-bold text-white tracking-widest uppercase transform hover:scale-105 hover:bg-[#21e065] transition-colors duration-200 w-80" onClick={() => signIn("google", { callbackUrl: "/game" })}>
+                {session.data?.user ? "Play as " + session.data.user.name : "Sign in with Google"}
               </button>
-              <button className="px-12 py-4 rounded-full bg-[#1ED760] font-bold text-white tracking-widest uppercase transform hover:scale-105 hover:bg-[#21e065] transition-colors duration-200 w-80" onClick={() => signIn()}>
-                Sign in
-              </button>
+              {session.data?.user && <button className="px-12 py-4 rounded-full bg-[#1ED760] font-bold text-white tracking-widest uppercase transform hover:scale-105 hover:bg-[#21e065] transition-colors duration-200 w-80" onClick={() => signOut()}>
+                Log out
+              </button>}
             </div>
           </div>
         </div>
