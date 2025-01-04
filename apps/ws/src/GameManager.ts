@@ -1,12 +1,13 @@
 import { WebSocket } from "ws";
-import { INIT_GAME, MOVE } from "./messages";
+import { INIT_GAME, MOVE } from "common";
 import { Game } from "./Game";
-
+import { prisma } from "@chessmate/db"
+import { v4 as uuidv4 } from 'uuid';
 // User class
 
 export class GameManager {
     private games: Game[];
-    private pendingUser: WebSocket | null;
+    private pendingUser: {id: string, socket: WebSocket} | null;
     private users: WebSocket[];
 
 
@@ -26,22 +27,30 @@ export class GameManager {
         //stop game because user has left
     }
 
-    private messageHandler(socket: WebSocket) {
-        socket.on('message', (data) => {
+    private async messageHandler(socket: WebSocket) {
+        socket.on('message', async (data) => {
             const message = JSON.parse(data.toString());
-
             if (message.type === INIT_GAME) {
+                
                 if (this.pendingUser) {
-                    const game = new Game(this.pendingUser, socket);
+                    const game = new Game(this.pendingUser, {id: message.senderId, socket: socket});   
+                    await prisma.game.create({
+                        data: {
+                            id: uuidv4(),
+                            whitePlayerId: this.pendingUser.id,
+                            blackPlayerId: message.senderId,
+                            status: "IN_PROGRESS"
+                        }
+                    }) 
                     this.games.push(game);
                     this.pendingUser = null;
                 }
                 else {
-                    this.pendingUser = socket;
+                    this.pendingUser = {id:message.senderId, socket:socket};
                 }
             }
             if (message.type === MOVE) {
-                const game = this.games.find(game => game.player1 === socket || game.player2 === socket);
+                const game = this.games.find(game => game.whitePlayer.socket === socket || game.blackPlayer.socket === socket);
                 if (game) {
                     game.makeMove(socket, message.move);
                 }

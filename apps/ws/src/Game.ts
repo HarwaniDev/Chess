@@ -1,26 +1,29 @@
 import { Chess } from "chess.js";
 import { WebSocket } from "ws";
-import { GAME_OVER, INIT_GAME, MOVE } from "./messages";
+import { GAME_OVER, INIT_GAME, MOVE } from "common";
+import { v4 as uuid } from "uuid";
 
 export class Game {
-    public player1: WebSocket;
-    public player2: WebSocket;
+    public id: string;
+    public whitePlayer: {id: string, socket: WebSocket};
+    public blackPlayer: {id: string, socket: WebSocket};
     private board: Chess;
     private startTime: Date;
 
-    constructor(player1: WebSocket, player2: WebSocket) {
-        this.player1 = player1;
-        this.player2 = player2;
+    constructor(whitePlayer: {id: string, socket: WebSocket}, blackPlayer: {id: string, socket: WebSocket}) {
+        this.id = uuid();
+        this.whitePlayer = whitePlayer;
+        this.blackPlayer = blackPlayer;
         this.board = new Chess();
         this.startTime = new Date();
 
-        this.player1.send(JSON.stringify({
+        this.whitePlayer.socket.send(JSON.stringify({
             type: INIT_GAME,
-            color: "white"
+            color: "white",
         }))
-        this.player2.send(JSON.stringify({
+        this.blackPlayer.socket.send(JSON.stringify({
             type: INIT_GAME,
-            color: "black"
+            color: "black",
         }))
     }
 
@@ -31,14 +34,14 @@ export class Game {
         
             //validate move using zod
 
-            if (this.board.turn() === 'w' && socket !== this.player1) {
-                this.player2.send(JSON.stringify({
+            if (this.board.turn() === 'w' && socket !== this.whitePlayer.socket) {
+                this.blackPlayer.socket.send(JSON.stringify({
                     type: "not your turn",
                 }))
                 return;
             }
-            if (this.board.turn() === 'b' && socket !== this.player2) {
-                this.player1.send(JSON.stringify({
+            if (this.board.turn() === 'b' && socket !== this.blackPlayer.socket) {
+                this.whitePlayer.socket.send(JSON.stringify({
                     type: "not your turn",
                 }))
                 return;
@@ -46,12 +49,12 @@ export class Game {
 
             try {
                 this.board.move(move);
-                this.player1.send(JSON.stringify({
+                this.whitePlayer.socket.send(JSON.stringify({
                     type: MOVE,
                     payload: move
                 }))
 
-                this.player2.send(JSON.stringify({
+                this.blackPlayer.socket.send(JSON.stringify({
                     type: MOVE,
                     payload: move
                 }))
@@ -61,7 +64,11 @@ export class Game {
             }
 
             if(this.board.isGameOver()){
-                this.player1.send(JSON.stringify({
+                this.whitePlayer.socket.send(JSON.stringify({
+                    type: GAME_OVER,
+                    winner: this.board.turn() === 'w' ? "black" : "white"
+                }));
+                this.blackPlayer.socket.send(JSON.stringify({
                     type: GAME_OVER,
                     winner: this.board.turn() === 'w' ? "black" : "white"
                 }));
