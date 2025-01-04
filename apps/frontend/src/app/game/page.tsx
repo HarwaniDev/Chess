@@ -15,7 +15,7 @@ export default function Game() {
 
     useEffect(() => {
         if (status !== "authenticated") return;
-
+        if(userId !== null) return;
         async function fetchUserId() {
             try {
                 const response = await fetch("http://localhost:3000/api/getUserId", {
@@ -30,8 +30,7 @@ export default function Game() {
                 const result = await response.json();
                 if (result.response) {
                     setUserId(result.response);
-                    console.log(userId);
-                    
+
                 } else {
                     console.error("Error fetching user ID:", result.error);
                 }
@@ -41,10 +40,10 @@ export default function Game() {
         }
 
         fetchUserId();
-    }, [session, status]);
+    }, [session]);
 
     useEffect(() => {
-        if (status !== "authenticated" || !socket) return;
+        if (!socket) return;
 
         socket.onmessage = (event) => {
             const message = JSON.parse(event.data);
@@ -53,21 +52,15 @@ export default function Game() {
                     setBoard(chess.board());
                     break;
                 case MOVE:
-                    try {
                         chess.move(message.payload);
                         setBoard(chess.board());
-                    } catch (error) {
-                        console.error(error);
-                    }
                     break;
                 case GAME_OVER:
                     console.log("Game Over");
                     break;
-                default:
-                    console.warn("Unknown message type:", message.type);
             }
         };
-    }, [socket, status, chess]);
+    }, [socket]);
 
     if (status === "loading" || !socket) {
         return <div>Loading...</div>;
@@ -85,6 +78,7 @@ export default function Game() {
                     socket?.send(
                         JSON.stringify({
                             type: INIT_GAME,
+                            senderId: userId
                         })
                     );
                 }}
