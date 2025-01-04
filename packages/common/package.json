@@ -1,8 +1,8 @@
 {
   "name": "common",
   "version": "1.0.0",
-  "main": "commands.ts",
-  "types": "commands.ts",
+  "main": "./src/commands.ts",
+  "types": "./src/commands.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
