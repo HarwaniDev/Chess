@@ -3,15 +3,17 @@ import ChessBoard from "@/components/PlayableChessBoard";
 import { useSocket } from "@/hooks/useSocket";
 import { GAME_OVER, INIT_GAME, MOVE } from "common";
 import { Chess } from "chess.js";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 
 export default function Game() {
     const socket = useSocket();
-    const chess = new Chess();
+    const chess = useMemo(() => new Chess(), []);
     const [board, setBoard] = useState(chess.board());
     const [userId, setUserId] = useState<string | null>(null);
-    const { data: session, status } = useSession();
+    const { data: sessionData, status } = useSession();
+
+    const session = useMemo(() => sessionData, [sessionData]);
 
     useEffect(() => {
         if (status !== "authenticated") return;
