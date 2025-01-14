@@ -31,11 +31,12 @@ export class GameManager {
             if (message.type === INIT_GAME) {
                 
                 if (this.pendingUser) {
-                    const game = new Game(this.pendingUser, {id: message.senderId, socket: socket});   
-                    this.users.push({id:message.senderId, socket: socket})
+                    const gameId = uuidv4();
+                    const game = new Game(gameId, this.pendingUser, {id: message.senderId, socket: socket, name: message.name});   
+                    this.users.push({id:message.senderId, socket: socket, name: message.name})
                     await prisma.game.create({
                         data: {
-                            id: uuidv4(),
+                            id: gameId,
                             whitePlayerId: this.pendingUser.id,
                             blackPlayerId: message.senderId,
                             status: "IN_PROGRESS"
@@ -45,7 +46,7 @@ export class GameManager {
                     this.pendingUser = null;
                 }
                 else {
-                    this.pendingUser = {id:message.senderId, socket:socket};
+                    this.pendingUser = {id:message.senderId, socket:socket, name: message.name};
                     this.users.push(this.pendingUser);
                 }
             }
