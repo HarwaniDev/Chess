@@ -22,10 +22,12 @@ const ChessBoard = ({ board, socket }: {
                         return (
                             <div
                                 onClick={() => {
+
                                     if (!from) {
                                         setFrom(squareNumber);
                                     }
                                     else {
+
                                         socket.send(JSON.stringify({
                                             type: MOVE,
                                             move: {
@@ -40,12 +42,12 @@ const ChessBoard = ({ board, socket }: {
                                 className={`aspect-square ${isLight ? 'bg-white' : 'bg-green-400'
                                     } flex justify-center items-center`}
                             >
-                                {square?.type === "p" ? square?.color === "w" ? <img src="wp.png" alt="" /> : <img src="bp.png" alt="" /> : null}
-                                {square?.type === "q" ? square?.color === "w" ? <img src="wq.png" alt="" /> : <img src="bq.png" alt="" /> : null}
-                                {square?.type === "k" ? square?.color === "w" ? <img src="wk.png" alt="" /> : <img src="bk.png" alt="" />  : null}
-                                {square?.type === "r" ? square?.color === "w" ? <img src="wr.png" alt="" /> : <img src="br.png" alt="" /> : null}
-                                {square?.type === "b" ? square?.color === "w" ? <img src="wb.png" alt="" /> : <img src="bb.png" alt="" /> : null}
-                                {square?.type === "n" ? square?.color === "w" ? <img src="wn.png" alt="" /> : <img src="bn.png" alt="" /> : null}
+                                {square?.type && square?.color && (
+                                    <img
+                                        src={`${square.color}${square.type}.png`}
+                                        alt=""
+                                    />
+                                )}
                             </div>
                         );
                     })
