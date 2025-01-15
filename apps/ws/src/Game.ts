@@ -43,7 +43,7 @@ export class Game {
         }
         else {
             this.whitePlayer.socket.send(JSON.stringify({
-                type:DRAW,
+                type:DRAW,  
                 message: "draw offered"
             }))
         }
