@@ -1,6 +1,6 @@
 import { Chess } from "chess.js";
 import { WebSocket } from "ws";
-import { CHECK, GAME_OVER, INIT_GAME, MOVE } from "common";
+import { CHECK, DRAW, GAME_OVER, INIT_GAME, MOVE } from "common";
 import { prisma } from "@chessmate/db";
 import { User } from "./User";
 
@@ -32,6 +32,21 @@ export class Game {
             whitePlayer: whitePlayer.name,
             blackPlayer: blackPlayer.name
         }))
+    }
+
+    async offerDraw(socket: WebSocket){
+        if(socket === this.whitePlayer.socket){
+            this.blackPlayer.socket.send(JSON.stringify({
+                type:DRAW,
+                message: "draw offered"
+            }))
+        }
+        else {
+            this.whitePlayer.socket.send(JSON.stringify({
+                type:DRAW,
+                message: "draw offered"
+            }))
+        }
     }
 
     async makeMove(socket: WebSocket, move: { from: string, to: string }) {

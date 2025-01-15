@@ -1,5 +1,5 @@
 import { WebSocket } from "ws";
-import { INIT_GAME, MOVE } from "common";
+import { INIT_GAME, MOVE, DRAW } from "common";
 import { Game } from "./Game";
 import { prisma } from "@chessmate/db"
 import { v4 as uuidv4 } from 'uuid';
@@ -67,6 +67,13 @@ export class GameManager {
                             to: message.move.to
                         }
                      })
+                }
+            }
+
+            if(message.type === DRAW){
+                const game = this.games.find(game => game.whitePlayer.socket === socket || game.blackPlayer.socket === socket);
+                if(game){
+                    game.offerDraw(socket);
                 }
             }
         })
